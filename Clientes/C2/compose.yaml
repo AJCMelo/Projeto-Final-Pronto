@@ -1,0 +1,60 @@
+﻿services:
+  c2-db:
+    image: mariadb:11
+    container_name: c2-db
+    environment:
+      MARIADB_DATABASE: c2_wp
+      MARIADB_USER: wp
+      MARIADB_PASSWORD: wp123
+      MARIADB_ROOT_PASSWORD: root123
+    volumes:
+      - c2_db_data:/var/lib/mysql
+    networks:
+      - c2_net
+    restart: unless-stopped
+
+  c2-wp:
+    image: wordpress:6-apache
+    container_name: c2-wp
+    depends_on:
+      - c2-db
+    environment:
+      WORDPRESS_DB_HOST: c2-db:3306
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp123
+      WORDPRESS_DB_NAME: c2_wp
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME','https://www.chaekernel.com/cms');
+        define('WP_SITEURL','https://www.chaekernel.com/cms');
+    volumes:
+      - c2_wp_data:/var/www/html
+    networks:
+      - c2_net
+    restart: unless-stopped
+
+  c2-proxy:
+    build:
+      context: ./Containers/PROXY
+      dockerfile: Dockerfile
+    image: c2-proxy
+    container_name: c2-proxy
+    depends_on:
+      - c2-wp
+    networks:
+      - kernelenet
+      - c2_net
+    volumes:
+      - ./Containers/PROXY/portal:/usr/local/apache2/htdocs:ro
+      - ./Containers/PROXY/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+      - ./Containers/PROXY/conf/vhost.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf:ro
+    restart: unless-stopped
+
+networks:
+  kernelenet:
+    external: true
+    name: kernelenet
+  c2_net: {}
+
+volumes:
+  c2_db_data:
+  c2_wp_data:

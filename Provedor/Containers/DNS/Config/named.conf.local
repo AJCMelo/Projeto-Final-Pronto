@@ -1,0 +1,27 @@
+//
+// Zonas autoritativas do provedor e clientes
+//
+
+zone "cafeekernel.com" {
+    type master;
+    file "/etc/bind/db.cafeekernel.com";
+    allow-transfer { any; };    // LAB: qualquer slave pode transferir (evite em produção)
+};
+
+zone "bolachaekernel.com" {
+    type master;
+    file "/etc/bind/db.bolachaekernel.com";
+    allow-transfer { any; };
+};
+
+zone "chaekernel.com" {
+    type master;
+    file "/etc/bind/db.chaekernel.com";
+    allow-transfer { any; };
+};
+
+zone "bolachacombiscoito.com" {
+    type master;
+    file "/etc/bind/db.bolachacombiscoito.com";
+    allow-transfer { any; };
+}; // Em produção: troque allow-transfer { any; }; por allow-transfer { none; }; ou restrinja a IPs dos seus slaves.

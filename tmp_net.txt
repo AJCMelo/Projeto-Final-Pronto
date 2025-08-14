@@ -1,0 +1,57 @@
+[
+    {
+        "Name": "kernelenet",
+        "Id": "5413bd9bde6c61244531d31d90d68f7299029a91e1354450fe992ac511ffba36",
+        "Created": "2025-07-30T23:42:26.699110676Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.19.0.0/16",
+                    "Gateway": "172.19.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "042716c23bf4c3fbc9c68ac7977583179443953bffec2c769b995e95a4360f0b": {
+                "Name": "proxy",
+                "EndpointID": "6bb14924678bc185331ba94b6465c3b7925670c6fe8be7cfdf096597b28591c9",
+                "MacAddress": "b2:ec:d9:5c:93:b4",
+                "IPv4Address": "172.19.0.4/16",
+                "IPv6Address": ""
+            },
+            "7484a644996021bcd34b5437cbb6161d92360dc8733e96b0405a04ebcf3cc141": {
+                "Name": "dns",
+                "EndpointID": "8abe2a0b807eeaa12dd1756d51790b7ac79d2729524b2856956f341ccba1f4e5",
+                "MacAddress": "ce:73:0f:00:5c:6d",
+                "IPv4Address": "172.19.0.3/16",
+                "IPv6Address": ""
+            },
+            "af5b7148ab2ffc16321ad87141fe9ce0cbc8ea454c14a7d3b5660834246fa762": {
+                "Name": "acme",
+                "EndpointID": "4cf72ed1087d4cf91e37aab12fb00920935d1eae5656465ffb3bbe67d2f8b3da",
+                "MacAddress": "76:9d:ff:ff:33:88",
+                "IPv4Address": "172.19.0.2/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {
+            "com.docker.network.enable_ipv4": "true",
+            "com.docker.network.enable_ipv6": "false"
+        },
+        "Labels": {}
+    }
+]
+

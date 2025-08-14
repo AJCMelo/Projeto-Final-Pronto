@@ -1,0 +1,8 @@
+/etc/haproxy/certs/bolachacombiscoito.wild.pem
+/etc/haproxy/certs/bolachaekernel.wild.pem
+/etc/haproxy/certs/cafeekernel.com.pem
+/etc/haproxy/certs/chaekernel.wild.pem
+/etc/haproxy/certs/webmail.cafeekernel.com.pem
+/etc/haproxy/certs/www.bolachacombiscoito.com.pem
+/etc/haproxy/certs/www.bolachaekernel.com.pem
+/etc/haproxy/certs/www.chaekernel.com.pem

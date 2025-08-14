@@ -1,0 +1,63 @@
+﻿name: cliente-c3
+
+services:
+  c3-db:
+    image: mariadb:11
+    container_name: c3-db
+    environment:
+      MARIADB_DATABASE: c3_wp
+      MARIADB_USER: wp
+      MARIADB_PASSWORD: wp123
+      MARIADB_ROOT_PASSWORD: root123
+    volumes:
+      - c3_db_data:/var/lib/mysql
+    networks:
+      - c3_net
+    restart: unless-stopped
+
+  c3-wp:
+    image: wordpress:6-apache
+    container_name: c3-wp
+    depends_on:
+      - c3-db
+    environment:
+      WORDPRESS_DB_HOST: c3-db:3306
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp123
+      WORDPRESS_DB_NAME: c3_wp
+      # WordPress servindo em subcaminho /cms atrás do HAProxy+Nginx
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME','https://www.bolachacombiscoito.com/cms');
+        define('WP_SITEURL','https://www.bolachacombiscoito.com/cms');
+    volumes:
+      - c3_wp_data:/var/www/html
+    networks:
+      - c3_net
+    restart: unless-stopped
+
+  c3-proxy:
+    build:
+      context: ./Containers/PROXY
+      dockerfile: Dockerfile
+    image: c3-proxy
+    container_name: c3-proxy
+    depends_on:
+      - c3-wp
+    networks:
+      - kernelenet   # para falar com o HAProxy do Provedor
+      - c3_net       # rede interna do cliente
+    # Sem publicar portas - acesso só via HAProxy (Provedor)
+    restart: unless-stopped
+# Se quiser inspecionar do host, pode publicar 8082->80 temporariamente:
+#ports:
+#- "8082:80"
+
+networks:
+  kernelenet:
+    external: true
+    name: kernelenet
+  c3_net: {}
+
+volumes:
+  c3_db_data: {}
+  c3_wp_data: {}

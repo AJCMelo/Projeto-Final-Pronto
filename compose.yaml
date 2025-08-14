@@ -1,0 +1,79 @@
+name: projeto-final
+
+services:
+  # DNS autoritativo (BIND) para as zonas do lab
+  dns:
+    build:
+      context: ./Provedor/Containers/DNS
+      dockerfile: Dockerfile
+    image: dns
+    container_name: dns
+    networks:
+      kernelenet: null
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    volumes:
+      # Volumes RELATIVOS (funcionam bem no Windows)
+      - ./Provedor/Containers/DNS/Config/db.cafeekernel.com:/etc/bind/db.cafeekernel.com:ro
+      - ./Provedor/Containers/DNS/Config/db.bolachaekernel.com:/etc/bind/db.bolachaekernel.com:ro
+      - ./Provedor/Containers/DNS/Config/db.chaekernel.com:/etc/bind/db.chaekernel.com:ro
+      - ./Provedor/Containers/DNS/Config/db.bolachacombiscoito.com:/etc/bind/db.bolachacombiscoito.com:ro
+      - ./Provedor/Containers/DNS/Config/named.conf.local:/etc/bind/named.conf.local:ro
+    restart: unless-stopped
+
+  # Servidor estático para responder o desafio ACME (HTTP-01) via webroot
+  acme:
+    image: nginx:alpine
+    container_name: acme
+    networks:
+      kernelenet: null
+    volumes:
+      - ./Provedor/Containers/PROXY/acme:/usr/share/nginx/html:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost/.well-known/acme-challenge/health || exit 1"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  # HAProxy (reverse proxy TLS) servindo portal, webmail e clientes
+  proxy:
+    image: haproxy:lts
+    container_name: proxy
+    depends_on:
+      dns:
+        condition: service_started
+      acme:
+        condition: service_healthy
+    networks:
+      kernelenet: null
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Provedor/Containers/PROXY/Config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./Provedor/Containers/PROXY/certs:/etc/haproxy/certs:ro
+      - ./Provedor/Containers/PROXY/static:/usr/local/etc/haproxy/www:ro
+    restart: unless-stopped
+
+  # Certbot (para emitir/renovar) — use com: docker compose run --rm certbot <comando>
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    networks:
+      kernelenet: null
+    volumes:
+      # Volumes RELATIVOS (evita problemas de encoding no caminho do Windows)
+      - ./Provedor/Containers/letsencrypt:/etc/letsencrypt
+      - ./Provedor/Containers/letsencrypt/lib:/var/lib/letsencrypt
+      - ./Provedor/Containers/letsencrypt/log:/var/log/letsencrypt
+      - ./Provedor/Containers/PROXY/acme:/acme
+      - ./Provedor/Containers/PROXY/certs:/out
+    restart: "no"
+
+networks:
+  kernelenet:
+    name: kernelenet
+    external: true
