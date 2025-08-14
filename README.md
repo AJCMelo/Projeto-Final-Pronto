@@ -21,48 +21,61 @@ Internas: c1_net, c2_net, c3_net (isolam cada stack de cliente).
 
 ## Estrutura de pastas
 
+```
 Projeto-Final/
-├─ compose.yaml                 # <— AQUI (raiz do projeto)
-├─ tmp_net.txt                  # dump da rede kernelenet (inspect)
-├─ Provedor/
-│  └─ Containers/
-│     ├─ DNS/
-│     │  ├─ Dockerfile
-│     │  └─ Config/
-│     │     ├─ db.cafeekernel.com
-│     │     ├─ db.bolachaekernel.com
-│     │     ├─ db.chaekernel.com
-│     │     ├─ db.bolachacombiscoito.com
-│     │     └─ named.conf.local
-│     ├─ PROXY/
-│     │  ├─ Dockerfile
-│     │  ├─ Config/haproxy.cfg
-│     │  ├─ acme/
-│     │  ├─ certs/           # .pem + crt-list.txt
-│     │  └─ static/portal.html
-│     └─ letsencrypt/        # etc/lib/log do certbot
-└─ Clientes/
-   ├─ C1/
-   │  ├─ compose.yaml
-   │  └─ Containers/PROXY/
-   │     ├─ Dockerfile
-   │     ├─ conf/nginx.conf
-   │     ├─ conf/site.conf
-   │     └─ portal/...
-   ├─ C2/
-   │  ├─ compose.yaml
-   │  └─ Containers/PROXY/
-   │     ├─ Dockerfile
-   │     ├─ conf/httpd.conf
-   │     ├─ conf/vhost.conf
-   │     └─ portal/...
-   └─ C3/
-      ├─ compose.yaml
-      └─ Containers/PROXY/
-         ├─ Dockerfile
-         ├─ config/nginx.conf
-         ├─ config/default.conf
-         └─ portal/...
+├── compose.yaml
+├── tmp_net.txt
+├── Provedor/
+│   └── Containers/
+│       ├── DNS/
+│       │   ├── Dockerfile
+│       │   └── Config/
+│       │       ├── db.cafeekernel.com
+│       │       ├── db.bolachaekernel.com
+│       │       ├── db.chaekernel.com
+│       │       ├── db.bolachacombiscoito.com
+│       │       └── named.conf.local
+│       ├── PROXY/
+│       │   ├── Dockerfile
+│       │   ├── Config/
+│       │   │   └── haproxy.cfg
+│       │   ├── acme/
+│       │   ├── certs/           (pem + crt-list.txt)
+│       │   └── static/
+│       │       └── portal.html
+│       └── letsencrypt/
+│           ├── etc/
+│           ├── lib/
+│           └── log/
+└── Clientes/
+    ├── C1/
+    │   ├── compose.yaml
+    │   └── Containers/
+    │       └── PROXY/
+    │           ├── Dockerfile
+    │           ├── conf/
+    │           │   ├── nginx.conf
+    │           │   └── site.conf
+    │           └── portal/
+    ├── C2/
+    │   ├── compose.yaml
+    │   └── Containers/
+    │       └── PROXY/
+    │           ├── Dockerfile
+    │           ├── conf/
+    │           │   ├── httpd.conf
+    │           │   └── vhost.conf
+    │           └── portal/
+    └── C3/
+        ├── compose.yaml
+        └── Containers/
+            └── PROXY/
+                ├── Dockerfile
+                ├── config/
+                │   ├── nginx.conf
+                │   └── default.conf
+                └── portal/
+```
 
 
 ## Dockerfiles 
